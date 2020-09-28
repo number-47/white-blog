@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.number47.white.blog.dao.BookMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.number47.white.blog.entity.Book">
+        <id column="id" property="id" />
+        <result column="cover" property="cover" />
+        <result column="title" property="title" />
+        <result column="author" property="author" />
+        <result column="date" property="date" />
+        <result column="press" property="press" />
+        <result column="abs" property="abs" />
+        <result column="cid" property="cid" />
+        <result column="categoryId" property="category.id" />
+        <result column="categoryName" property="category.name" />
+    </resultMap>
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        b.id,
+        b.cover,
+        b.title,
+        b.author,
+        b.date,
+        b.press,
+        b.abs,
+        b.cid
+    </sql>
+
+    <sql id="Category_Column_List">
+       c.id as categoryId,
+       c.name as categoryName
+    </sql>
+    <select id="findBookWithCategoryPage" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include>,
+               <include refid="Category_Column_List"></include>
+        from book b
+        left join category c
+        on b.cid = c.id
+        where 1 = 1
+        <if test="bookDto.cid != null and bookDto.cid != ''">
+            and b.cid = #{bookDto.cid}
+        </if>
+        <if test="bookDto.keyWord != null and bookDto.keyWord != ''">
+            and b.title like concat('%', #{bookDto.keyWord}, '%')
+            or
+            b.author like concat('%', #{bookDto.keyWord}, '%')
+        </if>
+    </select>
+</mapper>
