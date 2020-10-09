@@ -280,3 +280,12 @@ alter table user
 
 alter table user
 	add update_time timestamp default current_timestamp() not null comment '更新时间';
+alter table admin_menu change icon_cls icon varchar(64) null comment '图标';
+
+alter table admin_menu
+	add hidden int default 1 null comment '菜单是否隐藏';
+
+alter table admin_menu
+	add redirect varchar(200) null comment '重定向地址';
+
+alter table admin_menu change name_zh title varchar(64) null comment '菜单名称，用于渲染导航栏（菜单名）界面';

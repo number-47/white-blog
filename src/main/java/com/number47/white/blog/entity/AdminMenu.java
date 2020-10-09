@@ -36,11 +36,11 @@ public class AdminMenu implements Serializable {
     @ApiModelProperty(value = "与Vue路由中的name属性对应")
     private String name;
 
-    @ApiModelProperty(value = "中文名称，用于渲染导航栏（菜单名）界面")
-    private String nameZh;
+    @ApiModelProperty(value = "菜单名称，用于渲染导航栏（菜单名）界面")
+    private String title;
 
     @ApiModelProperty(value = "图标")
-    private String iconCls;
+    private String icon;
 
     @ApiModelProperty(value = "组件名，用于解析路由对应组件")
     private String component;
@@ -51,12 +51,17 @@ public class AdminMenu implements Serializable {
     @ApiModelProperty(value = "排序")
     private Integer sequence;
 
+    @ApiModelProperty(value = "重定向")
+    private String redirect;
+
+    @ApiModelProperty(value = "是否隐藏")
+    private boolean hidden;
+
     @ApiModelProperty(value = "创建时间")
     private LocalDateTime createTime;
 
     @ApiModelProperty(value = "更新时间")
     private LocalDateTime updateTime;
-
 
     @TableField(exist = false)
     List<AdminMenu> children;

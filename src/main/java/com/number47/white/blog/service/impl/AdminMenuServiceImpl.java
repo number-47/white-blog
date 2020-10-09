@@ -19,12 +19,10 @@ import com.number47.white.blog.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.support.lob.LobCreator;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -106,11 +104,18 @@ public class AdminMenuServiceImpl extends ServiceImpl<AdminMenuMapper, AdminMenu
         //获取当前用户对应的所有角色的id列表
         List<Long> rids = adminUserRoleService.listRoleIdsByUid(user.getId());
         //查询出这些角色对应的菜单项
-        AdminRoleMenuDto adminRoleMenuDto = new AdminRoleMenuDto();
-        List<Long> menuIds = adminRoleMenuService.listAllAdminRoleMenu(adminRoleMenuDto)
-                .stream().map(AdminRoleMenu::getMid).collect(Collectors.toList());
+        List<Long> menuIds = new ArrayList<>();
+        for (Long roleId:rids){
+            AdminRoleMenuDto adminRoleMenuDto = new AdminRoleMenuDto();
+            adminRoleMenuDto.setRid(roleId);
+            List<Long> menus = adminRoleMenuService.listAllAdminRoleMenu(adminRoleMenuDto)
+                    .stream().map(AdminRoleMenu::getMid).collect(Collectors.toList());
+            if (menus != null){
+                menuIds.addAll(menus);
+            }
+        }
         List<AdminMenu> menus = listByIds(menuIds).stream().distinct().collect(Collectors.toList());
-        //处理菜单项结构
+        //处理菜单子节点
         handleMenus(menus);
         return menus;
     }
@@ -122,13 +127,8 @@ public class AdminMenuServiceImpl extends ServiceImpl<AdminMenuMapper, AdminMenu
      * @param menus
      */
     private void handleMenus(List<AdminMenu> menus) {
-
-        AdminMenuDto rootCondition = new AdminMenuDto();
-        rootCondition.setParentId(0L);
         menus.forEach(m->{
             //根据父节点查询父节点的下一级子项目
-            AdminMenuDto adminMenuDto = new AdminMenuDto();
-            adminMenuDto.setParentId(m.getId());
             List<AdminMenu> children = getChildren(m.getId(),menus);
             m.setChildren(children);
         });

@@ -5,17 +5,24 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.number47.white.blog.common.CommonPage;
 import com.number47.white.blog.common.CommonResult;
 import com.number47.white.blog.dto.AdminMenuDto;
+import com.number47.white.blog.dto.Meta;
 import com.number47.white.blog.entity.AdminMenu;
+import com.number47.white.blog.entity.AdminRole;
+import com.number47.white.blog.entity.AdminRoleMenu;
 import com.number47.white.blog.service.AdminMenuService;
+import com.number47.white.blog.service.AdminRoleMenuService;
+import com.number47.white.blog.service.AdminRoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 /**
  * <p>
@@ -31,6 +38,8 @@ import java.util.List;
 public class AdminMenuController {
     @Autowired
     private AdminMenuService  adminMenuService;
+    @Autowired
+    private AdminRoleService adminRoleService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminMenuController.class);
     /**
@@ -159,7 +168,42 @@ public class AdminMenuController {
     @ApiModelProperty(value = "通过id获取菜单")
     @RequestMapping(value = "/menu", method = RequestMethod.GET)
     @ResponseBody
-    public CommonResult<List<AdminMenu>> getMenu() {
-        return CommonResult.success(adminMenuService.getMenusByCurrentUser());
+    public CommonResult<List<AdminMenuDto>> getMenu() {
+        //todo 管理员看到所有菜单
+        List<AdminMenu> adminMenus = adminMenuService.getMenusByCurrentUser();
+        return CommonResult.success(handleMenusToAdminMenuDto(adminMenus));
+    }
+
+    /**
+     * 设置菜单格式
+     * @param adminMenus
+     */
+    private List<AdminMenuDto> handleMenusToAdminMenuDto(List<AdminMenu> adminMenus) {
+        List<AdminMenuDto> adminMenuDtos = new ArrayList<>();
+        for (AdminMenu menu:adminMenus) {
+            AdminMenuDto adminMenuDto = new AdminMenuDto();
+            BeanUtils.copyProperties(menu, adminMenuDto);
+            addMeta(menu,adminMenuDto);
+            if (menu.getChildren().size()>0){
+                adminMenuDto.setChildren(handleMenusToAdminMenuDto(menu.getChildren()));
+            }
+            adminMenuDtos.add(adminMenuDto);
+        }
+        return adminMenuDtos;
+    }
+
+    /**
+     * 设置菜单的Meta
+     * @param menu
+     * @param adminMenuDto
+     */
+    private void addMeta(AdminMenu menu, AdminMenuDto adminMenuDto) {
+        Meta meta = new Meta();
+        meta.setIcon(menu.getIcon());
+        meta.setTitle(menu.getTitle());
+        //查询菜单有权限的角色
+        List<AdminRole> adminRoles = adminRoleService.getAdminRolesByMenuId(menu.getId());
+        meta.setRoles(adminRoles);
+        adminMenuDto.setMeta(meta);
     }
 }

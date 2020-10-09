@@ -27,4 +27,6 @@ public interface AdminRoleService extends IService<AdminRole> {
     IPage<AdminRole> listAdminRole(Page<AdminRole> page, AdminRoleDto adminRoleDto);
 
     AdminRole getAdminRole(Long id);
+
+    List<AdminRole> getAdminRolesByMenuId(Long menusId);
 }

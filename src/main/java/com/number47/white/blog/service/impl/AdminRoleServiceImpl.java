@@ -6,12 +6,16 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.number47.white.blog.dao.AdminRoleMapper;
 import com.number47.white.blog.dto.AdminRoleDto;
+import com.number47.white.blog.dto.AdminRoleMenuDto;
 import com.number47.white.blog.entity.AdminRole;
+import com.number47.white.blog.entity.AdminRoleMenu;
+import com.number47.white.blog.service.AdminRoleMenuService;
 import com.number47.white.blog.service.AdminRoleService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,6 +30,8 @@ import java.util.List;
 public class AdminRoleServiceImpl extends ServiceImpl<AdminRoleMapper, AdminRole> implements AdminRoleService {
     @Autowired
     private AdminRoleMapper adminRoleMapper;
+    @Autowired
+    private AdminRoleMenuService adminRoleMenuService;
 
     @Override
     public List<AdminRole> listAllAdminRole(AdminRoleDto adminRoleDto) {
@@ -66,5 +72,25 @@ public class AdminRoleServiceImpl extends ServiceImpl<AdminRoleMapper, AdminRole
     @Override
     public AdminRole getAdminRole(Long id) {
          return adminRoleMapper.selectById(id);
+    }
+
+    /**
+     * 获取菜单有权限的角色
+     * @param menusId 菜单id
+     * @return
+     */
+    @Override
+    public List<AdminRole> getAdminRolesByMenuId(Long menusId) {
+        List<AdminRole> adminRoles = new ArrayList<>();
+        AdminRoleMenuDto adminRoleMenuDto = new AdminRoleMenuDto();
+        adminRoleMenuDto.setMid(menusId);
+        List<AdminRoleMenu> adminRoleMenus = adminRoleMenuService.listAllAdminRoleMenu(adminRoleMenuDto);
+        for (AdminRoleMenu adminRoleMenu:adminRoleMenus) {
+            AdminRole adminRole = getAdminRole(adminRoleMenu.getRid());
+            if (adminRole != null){
+                adminRoles.add(adminRole);
+            }
+        }
+        return adminRoles;
     }
 }
