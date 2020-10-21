@@ -1,5 +1,6 @@
 package com.number47.white.blog.system.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -8,7 +9,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,7 +28,10 @@ import java.util.List;
 @ApiModel(value="UserDto对象", description="用户表")
 //null的属性不显示
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UserDto {
+public class UserDto implements Serializable {
+
+
+    private static final long serialVersionUID = 1380700475070348205L;
 
     @ApiModelProperty(value = "id")
     private String id;
@@ -58,9 +64,13 @@ public class UserDto {
     @ApiModelProperty(value = "是否启用 1：启用 0：禁用")
     private Boolean enabled;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @ApiModelProperty(value = "创建时间")
     private LocalDateTime createTime;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @ApiModelProperty(value = "更新时间")
     private LocalDateTime updateTime;
 
@@ -75,5 +85,6 @@ public class UserDto {
 
     @ApiModelProperty(value = "每页数量")
     private int pageSize = CommonConstant.PAGE_SIZE;
+
 
 }
