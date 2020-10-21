@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan("com.number47.white.blog.dao")
+@MapperScan("com.number47.white.blog.system.dao")
 public class WhiteBlogApplication {
 
     public static void main(String[] args) {

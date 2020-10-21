@@ -49,6 +49,14 @@ public class CommonResult<T> {
 
     /**
      * 失败返回结果
+     * @param errorCode 错误码
+     */
+    public static <T> CommonResult<T> failed(IErrorCode errorCode,T data) {
+        return new CommonResult<T>(errorCode.getCode(), errorCode.getMessage(), data);
+    }
+
+    /**
+     * 失败返回结果
      * @param message 提示信息
      */
     public static <T> CommonResult<T> failed(String message) {

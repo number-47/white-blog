@@ -1,5 +1,6 @@
 package com.number47.white.blog.common;
 
+import com.number47.white.blog.constant.CommonConstant;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 

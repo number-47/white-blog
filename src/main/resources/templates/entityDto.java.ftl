@@ -6,7 +6,7 @@ import ${pkg};
 <#if swagger2>
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import com.number47.white.blog.common.CommonConstant;
+import com.number47.white.blog.constant.CommonConstant;
 </#if>
 <#if entityLombokModel>
 import lombok.Data;
