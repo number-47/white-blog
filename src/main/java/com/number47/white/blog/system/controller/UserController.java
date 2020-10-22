@@ -29,6 +29,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -149,10 +150,13 @@ public class UserController {
 	@ApiModelProperty(value = "分页获取列表")
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResult<CommonPage<User>> listUser(UserDto userDto) {
+	public CommonResult<CommonPage<UserDto>> listUser(UserDto userDto) {
 		Page<User> page = new Page<>(userDto.getPageNum(), userDto.getPageSize());
-		IPage<User> userPage = userService.listUser(page, userDto);
-		return CommonResult.success(CommonPage.restPage(userPage));
+		IPage<User> userPage = userService.listUser(page,userDto);
+		// 转化成UserDto
+		IPage<UserDto> userDtoIPage = new Page<>(userDto.getPageNum(),userDto.getPageSize());
+		userDtoIPage.setRecords(handleUserListToUserDtoList(userPage.getRecords()));
+		return CommonResult.success(CommonPage.restPage(userDtoIPage));
 	}
 
 	/**
@@ -248,5 +252,28 @@ public class UserController {
 		BeanUtils.copyProperties(user, userDto);
 		return CommonResult.success(userDto);
 	}
+	/**
+	 * User装UserDto
+	 * @param user
+	 * @return
+	 */
+	private UserDto handleUserToUserDto(User user){
+		UserDto userDto = new UserDto();
+		BeanUtils.copyProperties(user,userDto);
+		userDto.setId(user.getId().toString());
+		return userDto;
+	}
 
+	/**
+	 * UserList转UserDtoList
+	 * @param users
+	 * @return
+	 */
+	private List<UserDto> handleUserListToUserDtoList(List<User> users){
+		ArrayList<UserDto> userDtos = new ArrayList<>();
+		for (User user:users) {
+			userDtos.add(handleUserToUserDto(user));
+		}
+		return userDtos;
+	}
 }

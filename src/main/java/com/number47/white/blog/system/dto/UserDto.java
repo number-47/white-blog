@@ -80,9 +80,6 @@ public class UserDto implements Serializable {
     @ApiModelProperty(value = "角色列表")
     private List<String> roles;
 
-    @ApiModelProperty(value = "记住我")
-    private Boolean rememberMe;
-
     @ApiModelProperty(value = "每页数量")
     private int pageSize = CommonConstant.PAGE_SIZE;
 
