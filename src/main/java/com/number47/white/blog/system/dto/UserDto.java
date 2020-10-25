@@ -74,14 +74,9 @@ public class UserDto implements Serializable {
     @ApiModelProperty(value = "更新时间")
     private LocalDateTime updateTime;
 
-    @ApiModelProperty(value = "页码")
-    private int pageNum = CommonConstant.PAGE_NUM;
-
     @ApiModelProperty(value = "角色列表")
     private List<String> roles;
 
-    @ApiModelProperty(value = "每页数量")
-    private int pageSize = CommonConstant.PAGE_SIZE;
 
 
 }

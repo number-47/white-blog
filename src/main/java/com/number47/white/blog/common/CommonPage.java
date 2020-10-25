@@ -30,6 +30,19 @@ public class CommonPage<T> {
         return result;
     }
 
+    /**
+     * 将PageHelper分页后的list转为分页信息
+     */
+    public static <T, E> CommonPage<E> replacePageList(IPage<T> pageInfo, List<E> list) {
+        CommonPage<E> result = new CommonPage<E>();
+        result.setTotalPage(pageInfo.getPages());
+        result.setPageNum(pageInfo.getCurrent());
+        result.setPageSize(pageInfo.getSize());
+        result.setTotal(pageInfo.getTotal());
+        result.setList(list);
+        return result;
+    }
+
     public Long getPageNum() {
         return pageNum;
     }

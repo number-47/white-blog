@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.number47.white.blog.common.CommonPage;
 import com.number47.white.blog.common.CommonResult;
+import com.number47.white.blog.common.PageParam;
 import com.number47.white.blog.constant.ShiroConstant;
 import com.number47.white.blog.system.dto.UserDto;
 import com.number47.white.blog.system.entity.User;
@@ -150,13 +151,13 @@ public class UserController {
 	@ApiModelProperty(value = "分页获取列表")
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	@ResponseBody
-	public CommonResult<CommonPage<UserDto>> listUser(UserDto userDto) {
-		Page<User> page = new Page<>(userDto.getPageNum(), userDto.getPageSize());
+	public CommonResult<CommonPage<UserDto>> listUser(UserDto userDto, PageParam pageParam) {
+		Page<User> page = new Page<>(pageParam.getPageNum(), pageParam.getPageSize());
 		IPage<User> userPage = userService.listUser(page,userDto);
-		// 转化成UserDto
-		IPage<UserDto> userDtoIPage = new Page<>(userDto.getPageNum(),userDto.getPageSize());
-		userDtoIPage.setRecords(handleUserListToUserDtoList(userPage.getRecords()));
-		return CommonResult.success(CommonPage.restPage(userDtoIPage));
+		// user转化UserDto
+		List<UserDto> userDtoList = handleUserListToUserDtoList(userPage.getRecords());
+		// 返回UserDto的page
+		return CommonResult.success(CommonPage.replacePageList(userPage,userDtoList));
 	}
 
 	/**
