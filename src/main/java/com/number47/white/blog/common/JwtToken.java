@@ -1,5 +1,6 @@
 package com.number47.white.blog.common;
 
+import com.number47.white.blog.constant.ShiroConstant;
 import org.apache.shiro.authc.AuthenticationToken;
 
 /**
@@ -13,15 +14,21 @@ public class JwtToken implements AuthenticationToken {
 
 	private String token;
 
-	private String expireTime;
+	private String refreshToken;
+
+	private long expireTime;
+
+	private long refreshExpireTime;
 
 	public JwtToken(String token) {
 		this.token = token;
 	}
 
-	public JwtToken(String token, String expireTime) {
+	public JwtToken(String token, String refreshToken) {
 		this.token = token;
-		this.expireTime = expireTime;
+		this.expireTime = System.currentTimeMillis() + ShiroConstant.EXPIRE_TIME;
+		this.refreshToken = refreshToken;
+		this.refreshExpireTime = System.currentTimeMillis() + ShiroConstant.REFRESH_EXPIRE_TIME;
 	}
 
 	@Override
@@ -42,11 +49,27 @@ public class JwtToken implements AuthenticationToken {
 		this.token = token;
 	}
 
-	public String getExpireTime() {
+	public String getRefreshToken() {
+		return refreshToken;
+	}
+
+	public void setRefreshToken(String refreshToken) {
+		this.refreshToken = refreshToken;
+	}
+
+	public long getExpireTime() {
 		return expireTime;
 	}
 
-	public void setExpireTime(String expireTime) {
+	public void setExpireTime(long expireTime) {
 		this.expireTime = expireTime;
+	}
+
+	public long getRefreshExpireTime() {
+		return refreshExpireTime;
+	}
+
+	public void setRefreshExpireTime(long refreshExpireTime) {
+		this.refreshExpireTime = refreshExpireTime;
 	}
 }

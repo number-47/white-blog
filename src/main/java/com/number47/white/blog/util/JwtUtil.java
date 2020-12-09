@@ -9,6 +9,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.number47.white.blog.constant.ShiroConstant;
 import com.sun.org.apache.xml.internal.security.algorithms.SignatureAlgorithm;
 import lombok.extern.log4j.Log4j2;
+import org.apache.shiro.authc.AuthenticationException;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -39,11 +40,11 @@ public class JwtUtil {
 					.withClaim("username", username)
 					.build();
 			//校验token
-			verifier.verify(token);
-			log.info("token is valid");
+			DecodedJWT jwt = verifier.verify(token);
+			log.info("token is valid" + jwt.toString());
 			return true;
 		} catch (Exception e) {
-			log.error("token is invalid{}", e.getMessage());
+			log.error("token is invalid {}", e.getMessage());
 			return false;
 		}
 	}
@@ -54,12 +55,30 @@ public class JwtUtil {
 	 * @return token中包含的用户名
 	 */
 	public static String getUsername(String token) {
+		if (StrUtil.isEmpty(token)){
+			throw new AuthenticationException("token不能为空");
+		}
 		try {
 			DecodedJWT jwt = JWT.decode(token);
 			return jwt.getClaim("username").asString();
 		} catch (JWTDecodeException e) {
 			log.error("error：{}", e.getMessage());
 			return null;
+		}
+	}
+
+	/**
+	 * 获得token中的信息无需secret解密也能获得
+	 *
+	 * @return token中包含的过期时间
+	 */
+	public static long getExp(String token) {
+		try {
+			DecodedJWT jwt = JWT.decode(token);
+			return jwt.getExpiresAt().getTime();
+		} catch (JWTDecodeException e) {
+			log.error("error：{}", e.getMessage());
+			return -1;
 		}
 	}
 
@@ -74,6 +93,24 @@ public class JwtUtil {
 		try {
 			Date date = new Date(System.currentTimeMillis() + ShiroConstant.EXPIRE_TIME);
 			Algorithm algorithm = Algorithm.HMAC256(secret);
+			return JWT.create()
+					.withClaim("username", username)
+					.withExpiresAt(date)
+					.sign(algorithm);
+		} catch (Exception e) {
+			log.error("error：{}", e);
+			return null;
+		}
+	}
+
+	/**
+	 * 生成refreshToken签名EXPIRE_TIME 分钟后过期
+	 * @return token
+	 */
+	public static String generalRefreshToken(String username) {
+		try {
+			Date date = new Date(System.currentTimeMillis() + ShiroConstant.REFRESH_EXPIRE_TIME);
+			Algorithm algorithm = Algorithm.HMAC256("number47");
 			return JWT.create()
 					.withClaim("username", username)
 					.withExpiresAt(date)

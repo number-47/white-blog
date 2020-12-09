@@ -23,6 +23,12 @@ public class ShiroConstant {
 	 * 加密算法
 	 */
 	public static final String ALGORITHM_NAME = "md5";
-
-	public static final long EXPIRE_TIME = 30 * 60 * 1000;
+	/**
+	 * token过期时间 1分鐘
+	 */
+	public static final long EXPIRE_TIME = 1 * 60 * 1000;
+	/**
+	 * refreshToken过期时间
+	 */
+	public static final long REFRESH_EXPIRE_TIME = 60*60 * 60 * 1000;
 }

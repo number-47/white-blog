@@ -1,10 +1,12 @@
 package com.number47.white.blog.config;
 
 import com.number47.white.blog.constant.ShiroConstant;
+import com.number47.white.blog.exception.CustomModularRealmAuthenticator;
 import com.number47.white.blog.filter.AuthFilter;
 import com.number47.white.blog.filter.URLPathMatchingFilter;
 import com.number47.white.blog.shiro.WBRealm;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.mgt.SecurityManager;
@@ -35,6 +37,11 @@ public class ShiroConfiguration {
         return new LifecycleBeanPostProcessor();
     }
 
+    @Bean
+    public ModularRealmAuthenticator authenticator(){
+        ModularRealmAuthenticator authenticator = new CustomModularRealmAuthenticator();
+        return authenticator;
+    }
 
     /**
      * 安全管理器

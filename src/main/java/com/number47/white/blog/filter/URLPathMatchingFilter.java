@@ -26,39 +26,41 @@ import java.util.List;
 @Log4j2
 public class URLPathMatchingFilter extends PathMatchingFilter {
 
-	@Autowired
-	private AdminPermissionService adminPermissionService;
+    @Autowired
+    private AdminPermissionService adminPermissionService;
 
-	private String[] skipAuthUrl = {"/api/user/login", "/api/user/register"};
+    private String[] skipAuthUrl = {"/api/user/login",
+            "/api/user/register",
+            "/api/user/refreshToken"};
 
-	@Override
-	protected boolean preHandle(ServletRequest request, ServletResponse response) throws Exception {
-		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-		if (HttpMethod.OPTIONS.toString().equals((httpServletRequest).getMethod())) {
-			httpServletResponse.setStatus(HttpStatus.HTTP_NO_CONTENT);
-			return true;
-		}
-		List<String> urls = Arrays.asList(skipAuthUrl);
-		//不需要登录校验的请求接口
-		if (urls.contains(httpServletRequest.getRequestURI())) {
-			return true;
-		}
-		if (adminPermissionService == null) {
-			adminPermissionService = SpringContextUtils.getContext().getBean(AdminPermissionService.class);
-		}
+    @Override
+    protected boolean preHandle(ServletRequest request, ServletResponse response) throws Exception {
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+        if (HttpMethod.OPTIONS.toString().equals((httpServletRequest).getMethod())) {
+            httpServletResponse.setStatus(HttpStatus.HTTP_NO_CONTENT);
+            return true;
+        }
+        List<String> urls = Arrays.asList(skipAuthUrl);
+        //不需要登录校验的请求接口
+        if (urls.contains(httpServletRequest.getRequestURI())) {
+            return true;
+        }
+        if (adminPermissionService == null) {
+            adminPermissionService = SpringContextUtils.getContext().getBean(AdminPermissionService.class);
+        }
 
-		Subject subject = SecurityUtils.getSubject();
-		//使用shiro验证
-		log.info(subject.isAuthenticated());
-		log.info(subject.isRemembered());
-		if (!subject.isAuthenticated() && !subject.isRemembered()) {
-			log.info("未登录用户尝试访问需要登录的接口");
-			return false;
-		}
+        Subject subject = SecurityUtils.getSubject();
+        //使用shiro验证
+        log.info("authenticated:" + subject.isAuthenticated());
+        log.info("isRemembered" + subject.isRemembered());
+        if (!subject.isAuthenticated() && !subject.isRemembered()) {
+            log.info("未登录用户尝试访问需要登录的接口");
+            return false;
+        }
 
-		String requestAPI = getPathWithinApplication(request);
+        String requestAPI = getPathWithinApplication(request);
 
-		return true;
-	}
+        return true;
+    }
 }

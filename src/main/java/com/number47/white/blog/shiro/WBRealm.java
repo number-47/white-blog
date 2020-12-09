@@ -1,6 +1,7 @@
 package com.number47.white.blog.shiro;
 
 import com.number47.white.blog.common.JwtToken;
+import com.number47.white.blog.exception.UnAuthorizedException;
 import com.number47.white.blog.system.entity.AdminMenu;
 import com.number47.white.blog.system.entity.AdminRole;
 import com.number47.white.blog.system.entity.User;
@@ -17,6 +18,7 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -98,7 +100,8 @@ public class WBRealm extends AuthorizingRealm {
 			//这里工具类没有处理空指针等异常这里处理一下(这里处理科学一些)
 			username = JwtUtil.getUsername(token);
 		} catch (Exception e) {
-			throw new AuthenticationException("heard的token拼写错误或者值为空");
+			log.error("根据Token无法获取用户名");
+			throw new AuthenticationException("token无效");
 		}
 		if (username == null) {
 			log.error("token无效(空''或者null都不行!)");
@@ -112,9 +115,13 @@ public class WBRealm extends AuthorizingRealm {
 			log.error("用户不存在!)");
 			throw new AuthenticationException("用户不存在!");
 		}
+		if (JwtUtil.isTokenExpired(new Date(JwtUtil.getExp(token)))){
+			log.error("token已过期");
+			throw new UnAuthorizedException("token已过期");
+		}
 		if (!JwtUtil.verify(token, username, userBean.getPassword())) {
 			log.error("用户名或密码错误(token无效或者与登录者不匹配)!)");
-			throw new AuthenticationException("用户名或密码错误(token无效或者与登录者不匹配)!");
+			throw new AuthenticationException("token无效");
 		}
 		if (userBean.getEnabled() == false) {
 			log.error("账号已被锁定,请联系管理员！");

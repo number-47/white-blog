@@ -14,6 +14,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author number47
@@ -24,6 +26,10 @@ import javax.servlet.http.HttpServletResponse;
 @Component("authFilter")
 public class AuthFilter extends BasicHttpAuthenticationFilter implements Filter {
 
+	private String[] skipAuthUrl = {"/api/user/login",
+			"/api/user/register",
+			"/api/user/refreshToken"};
+
 	/**
 	 * 执行登录
 	 * @param request
@@ -32,19 +38,16 @@ public class AuthFilter extends BasicHttpAuthenticationFilter implements Filter 
 	 * @throws Exception
 	 */
 	@Override
-	protected boolean executeLogin(ServletRequest request, ServletResponse response) throws Exception {
+	protected boolean executeLogin(ServletRequest request, ServletResponse response) throws AuthenticationException {
 		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+		// 从请求头获取“Token”的值
 		String token = httpServletRequest.getHeader(ShiroConstant.TOKEN);
 		JwtToken jwtToken = new JwtToken(token);
 		// 提交给realm进行登入，如果错误他会抛出异常并被捕获
-		try {
-			getSubject(request, response).login(jwtToken);
-			// 如果没有抛出异常则代表登入成功，返回true
-			return true;
-		} catch (AuthenticationException e) {
-			log.error(e.getMessage());
-			return false;
-		}
+		getSubject(request, response).login(jwtToken);
+		// 如果没有抛出异常则代表登入成功，返回true
+		return true;
 
 	}
 
@@ -57,14 +60,15 @@ public class AuthFilter extends BasicHttpAuthenticationFilter implements Filter 
 	 * @return
 	 */
 	@Override
-	protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
-		try {
-			return executeLogin(request, response);
-			// return true;有一篇博客这里直接返回true是不正确的,在这里我特别指出一下
-		} catch (Exception e) {
-			log.error("JwtFilter过滤验证失败!");
-			return false;
+	protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws AuthenticationException{
+		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+		List<String> urls = Arrays.asList(skipAuthUrl);
+		//不需要登录校验的请求接口
+		if (urls.contains(httpServletRequest.getRequestURI())) {
+			return true;
 		}
+		return executeLogin(request, response);
 	}
 
 
@@ -82,6 +86,7 @@ public class AuthFilter extends BasicHttpAuthenticationFilter implements Filter 
 		httpServletResponse.setHeader("Access-control-Allow-Origin", httpServletRequest.getHeader("Origin"));
 		httpServletResponse.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS,PUT,DELETE");
 		httpServletResponse.setHeader("Access-Control-Allow-Headers", httpServletRequest.getHeader("Access-Control-Request-Headers"));
+		httpServletResponse.setHeader("WWW-Authenticate", "Basic realm='Realm'");
 		// 跨域时会首先发送一个option请求，这里我们给option请求直接返回正常状态
 		if (httpServletRequest.getMethod().equals(RequestMethod.OPTIONS.name())) {
 			httpServletResponse.setStatus(HttpStatus.OK.value());

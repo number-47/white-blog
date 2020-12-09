@@ -10,4 +10,6 @@ public class CommonConstant {
 
     public static final int PAGE_NUM = 1;
     public static final int PAGE_SIZE = 10;
+    public static final String OPERATION_CREATE = "create";
+    public static final String OPERATION_UPDATE = "update";
 }

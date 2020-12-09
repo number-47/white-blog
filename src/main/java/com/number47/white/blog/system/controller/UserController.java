@@ -1,12 +1,16 @@
 package com.number47.white.blog.system.controller;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.number47.white.blog.common.CommonPage;
 import com.number47.white.blog.common.CommonResult;
+import com.number47.white.blog.common.JwtToken;
 import com.number47.white.blog.common.PageParam;
+import com.number47.white.blog.constant.CommonConstant;
 import com.number47.white.blog.constant.ShiroConstant;
+import com.number47.white.blog.exception.FailRequestException;
 import com.number47.white.blog.system.dto.UserDto;
 import com.number47.white.blog.system.entity.User;
 import com.number47.white.blog.system.service.UserService;
@@ -30,9 +34,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * <p>
@@ -49,8 +51,6 @@ import java.util.List;
 public class UserController {
 	@Autowired
 	private UserService userService;
-	@Autowired
-	private HashedCredentialsMatcher hashedCredentialsMatcher;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
@@ -83,6 +83,7 @@ public class UserController {
 			return CommonResult.validateFailed(result.getFieldError().getDefaultMessage());
 		}
 		CommonResult commonResult;
+		checkUserName(userDto.getUsername(),CommonConstant.OPERATION_CREATE,null);
 		int count = userService.createUser(userDto);
 		if (count == 1) {
 			commonResult = CommonResult.success(userDto);
@@ -109,6 +110,7 @@ public class UserController {
 			return CommonResult.validateFailed(result.getFieldError().getDefaultMessage());
 		}
 		CommonResult commonResult;
+		checkUserName(userDto.getUsername(),CommonConstant.OPERATION_UPDATE,id.toString());
 		int count = userService.updateUser(id, userDto);
 		if (count == 1) {
 			commonResult = CommonResult.success(userDto);
@@ -128,7 +130,7 @@ public class UserController {
 	 * @Date: 2020-08-11
 	 */
 	@ApiModelProperty(value = "通过id删除")
-	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
 	@ResponseBody
 	public CommonResult deleteUser(@PathVariable("id") Long id) {
 		int count = userService.deleteUser(id);
@@ -186,7 +188,7 @@ public class UserController {
 	@ResponseBody
 	public CommonResult<Object> getUser(@RequestBody UserDto userDto) {
 		String message;
-		HashMap<String, String> result = new HashMap<>(2);
+		HashMap<String, Object> result = new HashMap<>(2);
 		String username = userDto.getUsername();
 		String password = userDto.getPassword();
 		User userBean = userService.getUserByName(username);
@@ -213,7 +215,11 @@ public class UserController {
 		}
 		//返回的token
 		String token =  JwtUtil.sign(username, passwordInDB);
+		String refreshToken =  JwtUtil.generalRefreshToken(username);
 		result.put("token", token);
+		result.put("expireTime", JwtUtil.getExp(token));
+		result.put("refreshToken", refreshToken);
+		result.put("refreshExpireTime", JwtUtil.getExp(refreshToken));
 		result.put("username", username);
 		return CommonResult.success(result);
 	}
@@ -253,6 +259,36 @@ public class UserController {
 		BeanUtils.copyProperties(user, userDto);
 		return CommonResult.success(userDto);
 	}
+
+	/**
+	 * @Description: 刷新token
+	 * @Param: [token]
+	 * @return:
+	 * @Author: number47
+	 * @Date: 2020-08-11
+	 */
+	@ApiModelProperty(value = "刷新token")
+	@RequestMapping(value = "/refreshToken", method = RequestMethod.POST)
+	@ResponseBody
+	public CommonResult<HashMap<String,Object>> refreshToken(@RequestBody HashMap<String,String> data) {
+		String userName = data.get("userName");
+		String refreshToken = data.get("refreshToken");
+		HashMap<String,Object> result = new HashMap<>();
+		// 校验refreshToken
+		if (!JwtUtil.verify(refreshToken,userName,"number47")){
+			throw new AuthenticationException("refreshToken无效");
+		}
+		User userBean = userService.getUserByName(userName);
+		String passwordInDB = userBean.getPassword();
+		// 重新生成token
+		String newToken =  JwtUtil.sign(userName, passwordInDB);
+		result.put("token",newToken);
+		result.put("expireTime",JwtUtil.getExp(newToken));
+		return CommonResult.success(result);
+	}
+
+
+
 	/**
 	 * User装UserDto
 	 * @param user
@@ -277,4 +313,24 @@ public class UserController {
 		}
 		return userDtos;
 	}
+
+	/**
+	 * 检查是否存在用户名
+	 * @param userName 用户名
+	 * @param operate
+	 */
+	private void checkUserName(String userName,String operate, String userId){
+		User user = userService.getUserByName(userName);
+		if (CommonConstant.OPERATION_CREATE.equals(operate)){
+			if (user != null){
+				throw new FailRequestException("用户名已存在");
+			}
+		}else if (CommonConstant.OPERATION_UPDATE.equals(operate)){
+			if (user != null && StrUtil.isNotBlank(userId) && !userId.equals(user.getId().toString())){
+				throw new FailRequestException("用户名已存在");
+			}
+		}
+	}
+
+
 }

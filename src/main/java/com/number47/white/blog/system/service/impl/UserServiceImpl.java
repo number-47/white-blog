@@ -18,6 +18,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,6 +61,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
          User user = new User();
          BeanUtils.copyProperties(userDto,user);
          user.setId(id);
+         user.setUpdateTime(LocalDateTime.now());
          return userMapper.updateById(user);
     }
 
@@ -72,7 +74,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public IPage<User> listUser(Page<User> page, UserDto userDto) {
         User user = new User();
         BeanUtils.copyProperties(userDto,user);
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>(user);
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>(user);
+        queryWrapper.orderByDesc(User::getCreateTime);
         return userMapper.selectPage(page,queryWrapper);
     }
 
@@ -127,4 +130,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setPassword(encodedPassword);
         return createUser(user) == 1? "注册成功":"注册失败";
     }
+
+
+
 }
