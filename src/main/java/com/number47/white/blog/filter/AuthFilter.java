@@ -41,8 +41,9 @@ public class AuthFilter extends BasicHttpAuthenticationFilter implements Filter 
 	protected boolean executeLogin(ServletRequest request, ServletResponse response) throws AuthenticationException {
 		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-		// 从请求头获取“Token”的值
-		String token = httpServletRequest.getHeader(ShiroConstant.TOKEN);
+		// 从请求头获取“Authorization”的值,去除bearer
+		String authorization = httpServletRequest.getHeader(ShiroConstant.AUTHORIZATION);
+		String token = authorization.replace("bearer ","");
 		JwtToken jwtToken = new JwtToken(token);
 		// 提交给realm进行登入，如果错误他会抛出异常并被捕获
 		getSubject(request, response).login(jwtToken);
