@@ -1,11 +1,13 @@
 package com.number47.white.blog.system.dto;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.number47.white.blog.annotation.DateTime;
 import com.number47.white.blog.annotation.Phone;
+import com.number47.white.blog.system.entity.AdminRole;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -91,6 +93,11 @@ public class UserDto implements Serializable {
     @ApiModelProperty(value = "角色列表")
     private List<String> roles;
 
+    @ApiModelProperty(value = "角色列表")
+    private List<AdminRole> adminRoles;
 
+    @ApiModelProperty(value = "权限指令")
+    @TableField(exist = false)
+    private List<String> permissionDirects;
 
 }

@@ -1,16 +1,15 @@
 package com.number47.white.blog.system.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.List;
-
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
@@ -27,7 +26,7 @@ public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "id", type = IdType.AUTO)
+    @TableId(value = "id")
     private Long id;
 
     @ApiModelProperty(value = "登录名")
@@ -35,6 +34,9 @@ public class User implements Serializable {
 
     @ApiModelProperty(value = "密码")
     private String password;
+
+    @ApiModelProperty(value = "头像")
+    private String avatar;
 
     @ApiModelProperty(value = "盐")
     private String salt;
@@ -60,5 +62,13 @@ public class User implements Serializable {
     @ApiModelProperty(value = "角色列表")
     @TableField(exist = false)
     private List<String> roles;
+
+    @ApiModelProperty(value = "角色列表包含名称")
+    @TableField(exist = false)
+    private List<AdminRole> adminRoles;
+
+    @ApiModelProperty(value = "权限指令")
+    @TableField(exist = false)
+    private List<String> permissionDirects;
 
 }

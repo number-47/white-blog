@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * <p>
@@ -20,6 +21,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
+@NoArgsConstructor
 @ApiModel(value="AdminUserRole对象", description="后台用户角色关联表")
 public class AdminUserRole implements Serializable {
 
@@ -39,5 +41,10 @@ public class AdminUserRole implements Serializable {
 
     @ApiModelProperty(value = "更新时间")
     private LocalDateTime updateTime;
+
+    public AdminUserRole(Long uid, Long rid) {
+        this.rid = rid;
+        this.uid = uid;
+    }
 
 }

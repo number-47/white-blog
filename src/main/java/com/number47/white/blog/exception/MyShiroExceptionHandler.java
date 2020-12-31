@@ -41,6 +41,17 @@ public class MyShiroExceptionHandler {
 	}
 
 	/**
+	 * 处理SystemErrorException异常
+	 * @return
+	 */
+	@ResponseBody
+	@ExceptionHandler(value = SystemErrorException.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	public CommonResult systemErrorExceptionHandler(Exception e){
+		return CommonResult.failed(ResultCode.FAILED,e.getMessage());
+	}
+
+	/**
 	 * 处理FailRequestException异常
 	 * @return
 	 */

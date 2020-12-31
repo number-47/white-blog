@@ -18,6 +18,10 @@ import java.util.List;
 public interface AdminUserRoleService extends IService<AdminUserRole> {
    List<AdminUserRole> listAllAdminUserRole(AdminUserRoleDto adminUserRoleDto);
 
+    boolean createBathAdminUserRole(List<String> roleIds, String userId);
+
+    boolean createBathAdminUserRoleByUserIds(List<String> userIds, String roleId);
+
    int createAdminUserRole(AdminUserRoleDto adminUserRoleDto);
 
    int updateAdminUserRole(Long id, AdminUserRoleDto adminUserRoleDto);

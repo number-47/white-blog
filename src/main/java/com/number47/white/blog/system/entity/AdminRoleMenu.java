@@ -7,8 +7,7 @@ import java.time.LocalDateTime;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 /**
  * <p>
@@ -20,6 +19,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
+@NoArgsConstructor
 @ApiModel(value="AdminRoleMenu对象", description="角色菜单关联关系")
 public class AdminRoleMenu implements Serializable {
 
@@ -40,4 +40,8 @@ public class AdminRoleMenu implements Serializable {
     @ApiModelProperty(value = "更新时间")
     private LocalDateTime updateTime;
 
+    public AdminRoleMenu(Long rid, Long mid) {
+        this.rid = rid;
+        this.mid = mid;
+    }
 }

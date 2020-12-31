@@ -21,6 +21,9 @@ import lombok.EqualsAndHashCode;
 @ApiModel(value="AdminPermissionDto对象", description="权限/菜单")
 public class AdminPermissionDto {
 
+    @ApiModelProperty(value = "id")
+    private String id;
+
     @ApiModelProperty(value = "权限/菜单名")
     private String name;
 

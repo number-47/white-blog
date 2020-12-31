@@ -1,30 +1,26 @@
 package com.number47.white.blog.system.controller;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.crypto.digest.DigestUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.number47.white.blog.common.CommonPage;
 import com.number47.white.blog.common.CommonResult;
-import com.number47.white.blog.common.JwtToken;
 import com.number47.white.blog.common.PageParam;
 import com.number47.white.blog.constant.CommonConstant;
-import com.number47.white.blog.constant.ShiroConstant;
 import com.number47.white.blog.exception.FailRequestException;
+import com.number47.white.blog.exception.SystemErrorException;
 import com.number47.white.blog.system.dto.UserDto;
 import com.number47.white.blog.system.entity.User;
+import com.number47.white.blog.system.service.AdminUserRoleService;
 import com.number47.white.blog.system.service.UserService;
 import com.number47.white.blog.util.JwtUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.extern.log4j.Log4j2;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.*;
-import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
-import org.apache.shiro.authc.credential.SimpleCredentialsMatcher;
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ByteSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -34,7 +30,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.MessageDigest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * <p>
@@ -51,6 +49,8 @@ import java.util.*;
 public class UserController {
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private AdminUserRoleService adminUserRoleService;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
@@ -85,12 +85,15 @@ public class UserController {
 		CommonResult commonResult;
 		checkUserName(userDto.getUsername(),CommonConstant.OPERATION_CREATE,null);
 		int count = userService.createUser(userDto);
+		if (userDto.getRoles().size() > 0){
+			adminUserRoleService.createBathAdminUserRole(userDto.getRoles(),userDto.getId());
+		}
 		if (count == 1) {
 			commonResult = CommonResult.success(userDto);
 			LOGGER.debug("create User success:{}", userDto);
 		} else {
-			commonResult = CommonResult.failed("操作失败");
-			LOGGER.debug("create User failed:{}", userDto);
+			LOGGER.error("create User failed:{}", userDto);
+			throw new SystemErrorException("操作失败，请联系管理员");
 		}
 		return commonResult;
 	}
@@ -111,13 +114,16 @@ public class UserController {
 		}
 		CommonResult commonResult;
 		checkUserName(userDto.getUsername(),CommonConstant.OPERATION_UPDATE,id.toString());
+		if (userDto.getRoles().size() > 0){
+			adminUserRoleService.createBathAdminUserRole(userDto.getRoles(),userDto.getId());
+		}
 		int count = userService.updateUser(id, userDto);
 		if (count == 1) {
 			commonResult = CommonResult.success(userDto);
 			LOGGER.debug("update user success:{}", userDto);
 		} else {
-			commonResult = CommonResult.failed("操作失败");
-			LOGGER.debug("update user failed:{}", userDto);
+			LOGGER.error("update user failed:{}", userDto);
+			throw new SystemErrorException("操作失败，请联系管理员");
 		}
 		return commonResult;
 	}
@@ -138,8 +144,8 @@ public class UserController {
 			LOGGER.debug("delete User success :id={}", id);
 			return CommonResult.success(null);
 		} else {
-			LOGGER.debug("delete User failed :id={}", id);
-			return CommonResult.failed("操作失败");
+			LOGGER.error("delete User failed :id={}", id);
+			throw new SystemErrorException("操作失败，请联系管理员");
 		}
 	}
 
@@ -297,6 +303,10 @@ public class UserController {
 	private UserDto handleUserToUserDto(User user){
 		UserDto userDto = new UserDto();
 		BeanUtils.copyProperties(user,userDto);
+		List<String> roleIds = new ArrayList<>();
+		List<Long> roleIdsByUid = adminUserRoleService.listRoleIdsByUid(user.getId());
+		roleIdsByUid.stream().forEach(rid -> roleIds.add(rid.toString()));
+		userDto.setRoles(roleIds);
 		userDto.setId(user.getId().toString());
 		return userDto;
 	}

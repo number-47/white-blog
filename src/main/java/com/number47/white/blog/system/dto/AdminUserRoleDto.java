@@ -22,7 +22,8 @@ import lombok.EqualsAndHashCode;
 public class AdminUserRoleDto {
 
 
-
+    @ApiModelProperty(value = "id")
+    private String id;
 
     @ApiModelProperty(value = "用户id")
     private Long uid;

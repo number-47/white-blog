@@ -24,6 +24,10 @@ public interface AdminRoleMenuService extends IService<AdminRoleMenu> {
 
    int deleteAdminRoleMenu(Long id);
 
+   int deleteAdminRoleByRoleId(Long roleId);
+
+   boolean createBathAdminRoleMenu(List<String> menuIds, String roleId);
+
     IPage<AdminRoleMenu> listAdminRoleMenu(Page<AdminRoleMenu> page, AdminRoleMenuDto adminRoleMenuDto);
 
     AdminRoleMenu getAdminRoleMenu(Long id);

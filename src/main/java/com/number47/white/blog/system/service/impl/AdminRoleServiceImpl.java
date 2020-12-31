@@ -50,6 +50,7 @@ public class AdminRoleServiceImpl extends ServiceImpl<AdminRoleMapper, AdminRole
     public int createAdminRole(AdminRoleDto adminRoleDto) {
         AdminRole adminRole = new AdminRole();
         BeanUtils.copyProperties(adminRoleDto,adminRole);
+        adminRole.setId(Long.parseLong(adminRoleDto.getId()));
         return adminRoleMapper.insert(adminRole);
     }
 
@@ -117,5 +118,13 @@ public class AdminRoleServiceImpl extends ServiceImpl<AdminRoleMapper, AdminRole
             }
         }
         return adminRoles;
+    }
+
+    @Override
+    public AdminRole getRoleByName(String roleName) {
+        AdminRole adminRole = new AdminRole();
+        adminRole.setName(roleName);
+        QueryWrapper<AdminRole> queryWrapper = new QueryWrapper<>(adminRole);
+        return adminRoleMapper.selectOne(queryWrapper);
     }
 }

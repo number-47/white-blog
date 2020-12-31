@@ -289,3 +289,11 @@ alter table admin_menu
 	add redirect varchar(200) null comment '重定向地址';
 
 alter table admin_menu change name_zh title varchar(64) null comment '菜单名称，用于渲染导航栏（菜单名）界面';
+alter table user
+	add avatar varchar(600) null comment '头像地址';
+alter table admin_menu
+            	add type int default 0 null comment '0：菜单 1：按钮'
+alter table admin_menu
+	add permission_direct varchar(255) null comment '权限指令';
+
+

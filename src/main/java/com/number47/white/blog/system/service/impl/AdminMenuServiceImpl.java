@@ -53,13 +53,17 @@ public class AdminMenuServiceImpl extends ServiceImpl<AdminMenuMapper, AdminMenu
         BeanUtils.copyProperties(adminMenuDto, adminMenu);
         LambdaQueryWrapper<AdminMenu> queryWrapper = new LambdaQueryWrapper<>(adminMenu);
         queryWrapper.orderByAsc(AdminMenu::getSequence);
-        return adminMenuMapper.selectList(queryWrapper);
+        List<AdminMenu> menus =  adminMenuMapper.selectList(queryWrapper);
+        //处理菜单子节点
+        handleMenus(menus);
+        return menus;
     }
 
     @Override
     public int createAdminMenu(AdminMenuDto adminMenuDto) {
         AdminMenu adminMenu = new AdminMenu();
         BeanUtils.copyProperties(adminMenuDto, adminMenu);
+        adminMenu.setId(Long.parseLong(adminMenuDto.getId()));
         return adminMenuMapper.insert(adminMenu);
     }
 
@@ -184,5 +188,10 @@ public class AdminMenuServiceImpl extends ServiceImpl<AdminMenuMapper, AdminMenu
         }
         List<AdminMenu> adminMenus = adminMenuMapper.selectBatchIds(menuIds);
         return adminMenus;
+    }
+
+    @Override
+    public List<String> listPermissionDirects(List<Long> rIds, String type) {
+        return adminMenuMapper.listPermissionDirects(rIds,type);
     }
 }

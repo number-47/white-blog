@@ -18,6 +18,8 @@ import java.util.List;
 public interface AdminRoleService extends IService<AdminRole> {
    List<AdminRole> listAllAdminRole(AdminRoleDto adminRoleDto);
 
+   AdminRole getRoleByName(String roleName);
+
    int createAdminRole(AdminRoleDto adminRoleDto);
 
    int updateAdminRole(Long id, AdminRoleDto adminRoleDto);

@@ -1,10 +1,12 @@
 package com.number47.white.blog.system.controller;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.number47.white.blog.common.CommonPage;
 import com.number47.white.blog.common.CommonResult;
 import com.number47.white.blog.system.dto.AdminUserRoleDto;
+import com.number47.white.blog.system.dto.UserDto;
 import com.number47.white.blog.system.entity.AdminUserRole;
 import com.number47.white.blog.system.service.AdminUserRoleService;
 import io.swagger.annotations.Api;
@@ -16,7 +18,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * <p>
  * 后台用户角色关联表 前端控制器
@@ -147,5 +152,29 @@ public class AdminUserRoleController {
     @ResponseBody
     public CommonResult<AdminUserRole> getAdminUserRole(@PathVariable("id") Long id) {
         return CommonResult.success(adminUserRoleService.getAdminUserRole(id));
+    }
+
+    /**
+     * 给角色分配用户
+     * @param id 角色id
+     * @param userDtos 用户列表
+     * @return
+     */
+    @ApiModelProperty(value = "给角色分配用户")
+    @RequestMapping(value = "/distributeUser/{id}", method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResult distributeUser(@PathVariable("id") Long id, @RequestBody List<UserDto> userDtos) {
+        boolean result = false;
+        if (CollectionUtil.isNotEmpty(userDtos)){
+            List<String> userIds = userDtos.stream().map(UserDto::getId).collect(Collectors.toList());
+            result = adminUserRoleService.createBathAdminUserRoleByUserIds(userIds,id.toString());
+        }
+        if (result) {
+            LOGGER.debug("createBath AdminUserRole success :users={}", userDtos);
+            return CommonResult.success("操作成功");
+        } else {
+            LOGGER.error("createBath AdminUserRole failed :users={}", userDtos);
+            return CommonResult.failed("操作失败");
+        }
     }
 }

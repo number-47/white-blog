@@ -21,8 +21,8 @@ import lombok.EqualsAndHashCode;
 @ApiModel(value="AdminRoleMenuDto对象", description="角色菜单关联关系")
 public class AdminRoleMenuDto {
 
-
-
+    @ApiModelProperty(value = "id")
+    private String id;
 
     @ApiModelProperty(value = "角色id")
     private Long rid;

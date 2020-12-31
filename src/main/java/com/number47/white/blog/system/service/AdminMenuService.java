@@ -32,4 +32,7 @@ public interface AdminMenuService extends IService<AdminMenu> {
 
     List<AdminMenu> listAdminMenuByRoleId(Long roleId);
 
+    List<String> listPermissionDirects(List<Long> rIds,String type);
+
+
 }

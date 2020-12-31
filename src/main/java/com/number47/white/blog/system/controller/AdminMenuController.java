@@ -50,8 +50,9 @@ public class AdminMenuController {
     @ApiModelProperty(value = "获取菜单全部列表")
     @RequestMapping(value = "listAll", method = RequestMethod.GET)
     @ResponseBody
-    public CommonResult<List<AdminMenu>> getAdminMenuList(AdminMenuDto adminMenuDto) {
-        return CommonResult.success(adminMenuService.listAllAdminMenu(adminMenuDto));
+    public CommonResult<List<AdminMenuDto>> getAdminMenuList(AdminMenuDto adminMenuDto) {
+        List<AdminMenu> adminMenus = adminMenuService.listAllAdminMenu(adminMenuDto);
+        return CommonResult.success(handleMenusToAdminMenuDto(adminMenus));
     }
 
     /**
@@ -114,7 +115,7 @@ public class AdminMenuController {
     * @Date: 2020-09-14
     */
     @ApiModelProperty(value = "通过id删除菜单")
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
     @ResponseBody
     public CommonResult deleteAdminMenu(@PathVariable("id") Long id) {
         int count = adminMenuService.deleteAdminMenu(id);
@@ -163,7 +164,7 @@ public class AdminMenuController {
      * @Author: number47
      * @Date: 2020-09-14
      */
-    @ApiModelProperty(value = "通过id获取菜单")
+    @ApiModelProperty(value = "获取当前用户有权限的菜单")
     @RequestMapping(value = "/menu", method = RequestMethod.GET)
     @ResponseBody
     public CommonResult<List<AdminMenuDto>> getMenu() {
@@ -181,8 +182,10 @@ public class AdminMenuController {
         for (AdminMenu menu:adminMenus) {
             AdminMenuDto adminMenuDto = new AdminMenuDto();
             BeanUtils.copyProperties(menu, adminMenuDto);
+            adminMenuDto.setId(menu.getId().toString());
+            adminMenuDto.setLabel(menu.getName());
             addMeta(menu,adminMenuDto);
-            if (menu.getChildren().size()>0){
+            if (menu.getChildren() != null && menu.getChildren().size() > 0){
                 adminMenuDto.setChildren(handleMenusToAdminMenuDto(menu.getChildren()));
             }
             adminMenuDtos.add(adminMenuDto);

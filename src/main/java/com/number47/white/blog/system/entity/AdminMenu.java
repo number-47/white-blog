@@ -1,6 +1,7 @@
 package com.number47.white.blog.system.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.SqlCondition;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
@@ -34,6 +35,7 @@ public class AdminMenu implements Serializable {
     private String path;
 
     @ApiModelProperty(value = "与Vue路由中的name属性对应")
+    @TableField(condition = SqlCondition.LIKE)
     private String name;
 
     @ApiModelProperty(value = "菜单名称，用于渲染导航栏（菜单名）界面")
@@ -54,8 +56,14 @@ public class AdminMenu implements Serializable {
     @ApiModelProperty(value = "重定向")
     private String redirect;
 
+    @ApiModelProperty(value = "0：菜单 1：按钮")
+    private String type;
+
+    @ApiModelProperty(value = "权限指令")
+    private String permissionDirect;
+
     @ApiModelProperty(value = "是否隐藏")
-    private boolean hidden;
+    private Boolean hidden;
 
     @ApiModelProperty(value = "创建时间")
     private LocalDateTime createTime;

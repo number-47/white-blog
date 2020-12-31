@@ -39,6 +39,7 @@ public class AdminPermissionServiceImpl extends ServiceImpl<AdminPermissionMappe
     public int createAdminPermission(AdminPermissionDto adminPermissionDto) {
         AdminPermission adminPermission = new AdminPermission();
         BeanUtils.copyProperties(adminPermissionDto,adminPermission);
+        adminPermission.setId(Long.parseLong(adminPermissionDto.getId()));
         return adminPermissionMapper.insert(adminPermission);
     }
 
