@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.number47.white.blog.common.CommonPage;
 import com.number47.white.blog.common.CommonResult;
 import com.number47.white.blog.common.PageParam;
+import com.number47.white.blog.config.PasswordConfig;
 import com.number47.white.blog.constant.CommonConstant;
 import com.number47.white.blog.exception.FailRequestException;
 import com.number47.white.blog.exception.SystemErrorException;
@@ -14,13 +15,16 @@ import com.number47.white.blog.system.entity.User;
 import com.number47.white.blog.system.service.AdminUserRoleService;
 import com.number47.white.blog.system.service.UserService;
 import com.number47.white.blog.util.JwtUtil;
+import com.number47.white.blog.util.ShiroUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.extern.log4j.Log4j2;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.crypto.SecureRandomNumberGenerator;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ByteSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -51,6 +55,8 @@ public class UserController {
 	private UserService userService;
 	@Autowired
 	private AdminUserRoleService adminUserRoleService;
+	@Autowired
+	private PasswordConfig passwordConfig;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
@@ -84,11 +90,23 @@ public class UserController {
 		}
 		CommonResult commonResult;
 		checkUserName(userDto.getUsername(),CommonConstant.OPERATION_CREATE,null);
+		// 设置默认密码
+		String password = passwordConfig.getDefaultPassword();
+		// 生成盐,默认长度 16 位
+		String salt = new SecureRandomNumberGenerator().nextBytes().toString();
+		// 设置 hash 算法迭代次数
+		int times = 2;
+		// 得到 hash 后的密码
+		String encodedPassword = new SimpleHash("md5", password, salt, times).toString();
+		// 存储用户信息，包括 salt 与 hash 后的密码
+		userDto.setPassword(encodedPassword);
+		userDto.setSalt(salt);
 		int count = userService.createUser(userDto);
-		if (userDto.getRoles().size() > 0){
+		if (userDto.getRoles() != null && userDto.getRoles().size() > 0){
 			adminUserRoleService.createBathAdminUserRole(userDto.getRoles(),userDto.getId());
 		}
 		if (count == 1) {
+			userDto.setDefaultPassword(password);
 			commonResult = CommonResult.success(userDto);
 			LOGGER.debug("create User success:{}", userDto);
 		} else {
@@ -114,7 +132,7 @@ public class UserController {
 		}
 		CommonResult commonResult;
 		checkUserName(userDto.getUsername(),CommonConstant.OPERATION_UPDATE,id.toString());
-		if (userDto.getRoles().size() > 0){
+		if (userDto.getRoles() != null && userDto.getRoles().size() > 0){
 			adminUserRoleService.createBathAdminUserRole(userDto.getRoles(),userDto.getId());
 		}
 		int count = userService.updateUser(id, userDto);

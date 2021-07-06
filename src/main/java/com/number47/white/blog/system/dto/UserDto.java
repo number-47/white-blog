@@ -7,12 +7,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.number47.white.blog.annotation.DateTime;
 import com.number47.white.blog.annotation.Phone;
+import com.number47.white.blog.config.PasswordConfig;
 import com.number47.white.blog.system.entity.AdminRole;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.validator.constraints.Email;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
@@ -99,5 +101,9 @@ public class UserDto implements Serializable {
     @ApiModelProperty(value = "权限指令")
     @TableField(exist = false)
     private List<String> permissionDirects;
+
+    @ApiModelProperty(value = "默认密码")
+    @TableField(exist = false)
+    private String defaultPassword;
 
 }

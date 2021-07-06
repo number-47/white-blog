@@ -56,6 +56,19 @@ public class ShiroUtils {
 	}
 
 	/**
+	 * 密码加密,返回加密和盐
+	 * @param password
+	 * @return
+	 */
+	public static SimpleHash passwordAndSalt(String password){
+		// 生成盐,默认长度 16 位
+		String salt = new SecureRandomNumberGenerator().nextBytes().toString();
+		// 得到 hash 后的密码
+		SimpleHash simpleHash = new SimpleHash(ShiroConstant.ALGORITHM_NAME, password, salt, ShiroConstant.HASH_TIME);
+		return simpleHash;
+	}
+
+	/**
 	 * 密码验证
 	 * @param password 未加密密码
 	 * @param encodedPassword 数据库已加密的密码

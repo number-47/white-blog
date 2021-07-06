@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8111
 
 spring:
   datasource:
@@ -42,3 +42,9 @@ mybatis-plus:
 img:
   url: http://localhost:8080/file/
   path: D://file/
+
+password:
+  defaultPassword: 1234567 #默认密码长度6-15
+  isClear: false #是否明文 没实现
+  min: 3 #暂时没实现
+  max: 15 #暂时没实现
