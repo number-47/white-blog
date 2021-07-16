@@ -55,18 +55,6 @@ public class ShiroUtils {
 		return encodedPassword;
 	}
 
-	/**
-	 * 密码加密,返回加密和盐
-	 * @param password
-	 * @return
-	 */
-	public static SimpleHash passwordAndSalt(String password){
-		// 生成盐,默认长度 16 位
-		String salt = new SecureRandomNumberGenerator().nextBytes().toString();
-		// 得到 hash 后的密码
-		SimpleHash simpleHash = new SimpleHash(ShiroConstant.ALGORITHM_NAME, password, salt, ShiroConstant.HASH_TIME);
-		return simpleHash;
-	}
 
 	/**
 	 * 密码验证
@@ -74,9 +62,9 @@ public class ShiroUtils {
 	 * @param encodedPassword 数据库已加密的密码
 	 * @return
 	 */
-	public static boolean passwordDecrypt(String password, String encodedPassword){
-		byte[] passwordByte = passwordEncrypt(password).getBytes();
-		byte[] encodedPasswordByte = encodedPassword.getBytes();
+	public static boolean passwordDecrypt(String password, String encodedPassword, String salt){
+		byte[] encodedPasswordByte = new SimpleHash(ShiroConstant.ALGORITHM_NAME, password, salt, ShiroConstant.HASH_TIME).toString().getBytes();
+		byte[] passwordByte = encodedPassword.getBytes();
 		return 	MessageDigest.isEqual(passwordByte, encodedPasswordByte);
 	}
 }

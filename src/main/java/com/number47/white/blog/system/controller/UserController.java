@@ -8,8 +8,10 @@ import com.number47.white.blog.common.CommonResult;
 import com.number47.white.blog.common.PageParam;
 import com.number47.white.blog.config.PasswordConfig;
 import com.number47.white.blog.constant.CommonConstant;
+import com.number47.white.blog.constant.ShiroConstant;
 import com.number47.white.blog.exception.FailRequestException;
 import com.number47.white.blog.exception.SystemErrorException;
+import com.number47.white.blog.system.dto.ModifyPassDto;
 import com.number47.white.blog.system.dto.UserDto;
 import com.number47.white.blog.system.entity.User;
 import com.number47.white.blog.system.service.AdminUserRoleService;
@@ -94,10 +96,8 @@ public class UserController {
 		String password = passwordConfig.getDefaultPassword();
 		// 生成盐,默认长度 16 位
 		String salt = new SecureRandomNumberGenerator().nextBytes().toString();
-		// 设置 hash 算法迭代次数
-		int times = 2;
 		// 得到 hash 后的密码
-		String encodedPassword = new SimpleHash("md5", password, salt, times).toString();
+		String encodedPassword = new SimpleHash(ShiroConstant.ALGORITHM_NAME, password, salt, ShiroConstant.HASH_TIME).toString();
 		// 存储用户信息，包括 salt 与 hash 后的密码
 		userDto.setPassword(encodedPassword);
 		userDto.setSalt(salt);
@@ -217,16 +217,13 @@ public class UserController {
 		String password = userDto.getPassword();
 		User userBean = userService.getUserByName(username);
 		if (userBean == null) {
-			log.error("用户不存在!)");
+			log.error("用户不存在!");
 			message = "用户不存在";
 			return CommonResult.failed(message);
 		}
 		String passwordInDB = userBean.getPassword();
 		String salt = userBean.getSalt();
-		byte[]  passwordInDBByte= passwordInDB.getBytes();
-		// 根据salt生成加密密码
-		byte[] passwordByte = new SimpleHash("md5", password, salt, 2).toString().getBytes();
-		boolean verifyPassword =  MessageDigest.isEqual(passwordByte, passwordInDBByte);
+		boolean verifyPassword =  ShiroUtils.passwordDecrypt(password,passwordInDB,salt);
 		if (verifyPassword == false){
 			log.error("密码错误!");
 			message = "密码错误";
@@ -263,6 +260,100 @@ public class UserController {
 		subject.logout();
 		String message = "成功登出";
 		return CommonResult.success(message);
+	}
+
+	/**
+	 * 修改密码
+	 * @param modifyPassDto
+	 * @param result
+	 * @return
+	 */
+	@ApiModelProperty(value = "修改密码")
+	@PostMapping("/modifyPass")
+	@ResponseBody
+	public CommonResult<String> modifyPassWord(@Validated @RequestBody ModifyPassDto modifyPassDto, BindingResult result) {
+		if (result.hasErrors()) {
+			return CommonResult.validateFailed(result.getFieldError().getDefaultMessage());
+		}
+		String message;
+		User userBean = userService.getUserByName(modifyPassDto.getUsername());
+		if (userBean == null) {
+			log.error("用户不存在!");
+			message = "用户不存在";
+			return CommonResult.failed(message);
+		}
+		String passwordInDB = userBean.getPassword();
+		String salt = userBean.getSalt();
+		// 校验旧密码是否正确
+		boolean verifyPassword =  ShiroUtils.passwordDecrypt(modifyPassDto.getOldPass(),passwordInDB,salt);
+		if (verifyPassword == false){
+			log.error("密码错误!");
+			message = "密码错误";
+			return CommonResult.failed(message);
+		}
+		// 检验密码和确认密码
+		if (!modifyPassDto.getPass().equals(modifyPassDto.getCheckPass())){
+			log.error("两次输入密码不一致!");
+			message = "两次输入密码不一致";
+			return CommonResult.failed(message);
+		}
+		// 更新密码
+		UserDto userDto = new UserDto();
+		// 生成盐,默认长度 16 位
+		String newSalt = new SecureRandomNumberGenerator().nextBytes().toString();
+		// 得到 hash 后的密码
+		String encodedPassword = new SimpleHash(ShiroConstant.ALGORITHM_NAME, modifyPassDto.getPass(), newSalt, ShiroConstant.HASH_TIME).toString();
+		userDto.setPassword(encodedPassword);
+		userDto.setSalt(newSalt);
+		int count = userService.updateUser(Long.parseLong(modifyPassDto.getId()), userDto);
+		if (count == 1) {
+			LOGGER.debug("update user success:{}", userDto);
+			return CommonResult.success("修改密码成功");
+		} else {
+			LOGGER.error("update user failed:{}", userDto);
+			throw new SystemErrorException("操作失败，请联系管理员");
+		}
+	}
+
+
+	/**
+	 * 重置密码
+	 *
+	 * @param userDtos
+	 * @return
+	 */
+	@ApiModelProperty(value = "重置密码")
+	@PostMapping("/resetPass")
+	@ResponseBody
+	public CommonResult<String> modifyPassWord(@RequestBody List<UserDto> userDtos) {
+		String userNotExitMessage = "";
+		String updateUserFailMessage = "";
+		for (UserDto userDto : userDtos) {
+			Long id = Long.parseLong(userDto.getId());
+			User userBean = userService.getUser(id);
+			if (userBean == null) {
+				userNotExitMessage = userNotExitMessage + userDto.getUsername() + "|";
+				continue;
+			}
+			String password = passwordConfig.getDefaultPassword();
+			// 重置密码
+			UserDto resetUserDto = new UserDto();
+			// 生成盐,默认长度 16 位
+			String newSalt = new SecureRandomNumberGenerator().nextBytes().toString();
+			// 得到 hash 后的密码
+			String encodedPassword = new SimpleHash(ShiroConstant.ALGORITHM_NAME, password, newSalt, ShiroConstant.HASH_TIME).toString();
+			resetUserDto.setPassword(encodedPassword);
+			resetUserDto.setSalt(newSalt);
+			int count = userService.updateUser(id, resetUserDto);
+			if (count != 1) {
+				updateUserFailMessage = updateUserFailMessage + userDto.getUsername() + "|";
+			}
+		}
+		if ("".equals(updateUserFailMessage) && "".equals(userNotExitMessage)) {
+			return CommonResult.success("重置密码成功");
+		} else {
+			return CommonResult.failed("用户密码重置失败：" + updateUserFailMessage + userNotExitMessage);
+		}
 	}
 
 	/**

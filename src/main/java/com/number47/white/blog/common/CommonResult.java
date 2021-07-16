@@ -93,6 +93,13 @@ public class CommonResult<T> {
     }
 
     /**
+     * 无效的token
+     */
+    public static <T> CommonResult<T> illegal(T data) {
+        return new CommonResult<T>(ResultCode.ILLEGAL_TOKEN.getCode(), ResultCode.ILLEGAL_TOKEN.getMessage(), data);
+    }
+
+    /**
      * 未授权返回结果
      */
     public static <T> CommonResult<T> forbidden(T data) {

@@ -1,6 +1,7 @@
 package com.number47.white.blog.shiro;
 
 import com.number47.white.blog.common.JwtToken;
+import com.number47.white.blog.common.ResultCode;
 import com.number47.white.blog.exception.UnAuthorizedException;
 import com.number47.white.blog.system.entity.AdminMenu;
 import com.number47.white.blog.system.entity.AdminRole;
@@ -101,11 +102,11 @@ public class WBRealm extends AuthorizingRealm {
 			username = JwtUtil.getUsername(token);
 		} catch (Exception e) {
 			log.error("根据Token无法获取用户名");
-			throw new AuthenticationException("token无效");
+			throw new UnAuthorizedException(ResultCode.ILLEGAL_TOKEN.getMessage());
 		}
 		if (username == null) {
 			log.error("token无效(空''或者null都不行!)");
-			throw new AuthenticationException("token无效");
+			throw new UnAuthorizedException(ResultCode.ILLEGAL_TOKEN.getMessage());
 		}
 		// 通过用户名查询用户
 		User userBean = userService.getUserByName(username);
@@ -113,15 +114,15 @@ public class WBRealm extends AuthorizingRealm {
 		String salt = userBean.getSalt();
 		if (userBean == null) {
 			log.error("用户不存在!)");
-			throw new AuthenticationException("用户不存在!");
+			throw new UnAuthorizedException(ResultCode.ILLEGAL_TOKEN.getMessage());
 		}
 		if (JwtUtil.isTokenExpired(new Date(JwtUtil.getExp(token)))){
 			log.error("token已过期");
-			throw new UnAuthorizedException("token已过期");
+			throw new UnAuthorizedException(ResultCode.UNAUTHORIZED.getMessage());
 		}
 		if (!JwtUtil.verify(token, username, userBean.getPassword())) {
 			log.error("用户名或密码错误(token无效或者与登录者不匹配)!)");
-			throw new AuthenticationException("token无效");
+			throw new UnAuthorizedException(ResultCode.ILLEGAL_TOKEN.getMessage());
 		}
 		if (userBean.getEnabled() == false) {
 			log.error("账号已被锁定,请联系管理员！");

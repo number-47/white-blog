@@ -1,91 +1,97 @@
--- ----------------------------
--- Records of admin_menu
--- ----------------------------
-INSERT INTO `admin_menu` VALUES (1, '/nested', 'Nested', 'Nested', 'nested', 'Layout', 0, 1, '2020-10-10 22:24:50', '2020-10-10 22:24:50', 0, '/nested/menu1');
-INSERT INTO `admin_menu` VALUES (2, 'menu1', 'Menu1', 'Menu1', 'nested', 'nested/menu1/index', 1, 3, '2020-10-10 22:25:43', '2020-10-10 22:25:43', 0, NULL);
-INSERT INTO `admin_menu` VALUES (3, '/form', 'Form', 'Form', 'form', 'Layout', 0, 4, '2020-10-11 12:20:26', '2020-10-11 12:20:26', 0, NULL);
-INSERT INTO `admin_menu` VALUES (5, 'menu1-1', 'Menu1-1', 'Menu1-1', NULL, 'nested/menu1/menu1-1', 2, 6, '2020-10-11 12:24:13', '2020-10-11 12:24:13', 0, NULL);
-INSERT INTO `admin_menu` VALUES (6, '/system', 'System', '系统管理', 'table', 'Layout', 0, 7, '2020-10-11 13:12:26', '2020-10-11 13:12:26', 0, NULL);
-INSERT INTO `admin_menu` VALUES (7, 'user', 'User', '用户管理', 'nested', 'system/user/index', 6, 8, '2020-10-11 13:13:13', '2020-10-11 13:13:13', 0, NULL);
+INSERT INTO white_blog.admin_menu (id, path, name, title, icon, component, parent_id, sequence, create_time, update_time, hidden, redirect, permission_direct, type) VALUES (1, '/nested', 'Nested', 'Nested', 'nested', 'Layout', 0, 1, '2020-10-10 22:24:50', '2020-10-10 22:24:50', 0, '/nested/menu1', null, 0);
+INSERT INTO white_blog.admin_menu (id, path, name, title, icon, component, parent_id, sequence, create_time, update_time, hidden, redirect, permission_direct, type) VALUES (2, 'menu1', 'Menu1', 'Menu1', 'nested', 'nested/menu1/index', 1, 3, '2020-10-10 22:25:43', '2020-10-10 22:25:43', 0, null, null, 0);
+INSERT INTO white_blog.admin_menu (id, path, name, title, icon, component, parent_id, sequence, create_time, update_time, hidden, redirect, permission_direct, type) VALUES (3, '/form', 'Form', 'Form', 'form', 'Layout', 0, 4, '2020-10-11 12:20:26', '2020-10-11 12:20:26', 0, null, null, 0);
+INSERT INTO white_blog.admin_menu (id, path, name, title, icon, component, parent_id, sequence, create_time, update_time, hidden, redirect, permission_direct, type) VALUES (5, 'menu1-1', 'Menu1-1', 'Menu1-1', null, 'nested/menu1/menu1-1', 2, 6, '2020-10-11 12:24:13', '2020-10-11 12:24:13', 0, null, null, 0);
+INSERT INTO white_blog.admin_menu (id, path, name, title, icon, component, parent_id, sequence, create_time, update_time, hidden, redirect, permission_direct, type) VALUES (6, '/system', '系统管理', '系统管理', 'table', 'Layout', 0, 7, '2020-10-11 13:12:26', '2020-10-11 13:12:26', 0, null, null, 0);
+INSERT INTO white_blog.admin_menu (id, path, name, title, icon, component, parent_id, sequence, create_time, update_time, hidden, redirect, permission_direct, type) VALUES (7, 'user', '用户管理', '用户管理', 'nested', 'system/user/index', 6, 8, '2020-10-11 13:13:13', '2020-10-11 13:13:13', 0, null, null, 0);
+INSERT INTO white_blog.admin_menu (id, path, name, title, icon, component, parent_id, sequence, create_time, update_time, hidden, redirect, permission_direct, type) VALUES (8, 'adminMenu', '菜单管理', '菜单管理', 'nested', 'system/adminMenu/index', 6, 8, '2020-10-11 13:13:13', '2020-10-11 13:13:13', 0, null, null, 0);
+INSERT INTO white_blog.admin_menu (id, path, name, title, icon, component, parent_id, sequence, create_time, update_time, hidden, redirect, permission_direct, type) VALUES (9, 'role', '角色管理', '角色管理', 'nested', 'system/role/index', 6, 0, '2021-07-05 17:21:57', '2021-07-05 17:21:58', 0, '', '', 0);
+INSERT INTO white_blog.admin_menu (id, path, name, title, icon, component, parent_id, sequence, create_time, update_time, hidden, redirect, permission_direct, type) VALUES (10, '', '修改角色', '修改角色', 'nested', '', 9, 9, '2020-10-11 13:13:13', '2020-10-11 13:13:13', 1, null, 'role:update', 1);
+INSERT INTO white_blog.admin_menu (id, path, name, title, icon, component, parent_id, sequence, create_time, update_time, hidden, redirect, permission_direct, type) VALUES (11, '', '删除用户', '删除用户', 'nested', '', 7, 12, '2020-10-11 13:13:13', '2020-10-11 13:13:13', 1, null, 'user:delete', 1);
+INSERT INTO white_blog.admin_menu (id, path, name, title, icon, component, parent_id, sequence, create_time, update_time, hidden, redirect, permission_direct, type) VALUES (13, '', '新增用户', '新增用户', 'nested', '', 7, 9, '2020-10-11 13:13:13', '2020-10-11 13:13:13', 1, null, 'user:add', 1);
+INSERT INTO white_blog.admin_menu (id, path, name, title, icon, component, parent_id, sequence, create_time, update_time, hidden, redirect, permission_direct, type) VALUES (14, '', '修改用户', '修改用户', 'nested', '', 7, 11, '2020-10-11 13:13:13', '2020-10-11 13:13:13', 1, null, 'user:update', 1);
+INSERT INTO white_blog.admin_menu (id, path, name, title, icon, component, parent_id, sequence, create_time, update_time, hidden, redirect, permission_direct, type) VALUES (18, '', '导出用户', '导出用户', 'nested', '', 7, 10, '2020-10-11 13:13:13', '2020-10-11 13:13:13', 1, null, 'user:export', 1);
+INSERT INTO white_blog.admin_menu (id, path, name, title, icon, component, parent_id, sequence, create_time, update_time, hidden, redirect, permission_direct, type) VALUES (20, '', '新增角色', '新增角色', 'nested', '', 9, 0, '2021-07-05 17:31:20', '2021-07-05 17:31:21', 1, '', 'role:add', 1);
+INSERT INTO white_blog.admin_menu (id, path, name, title, icon, component, parent_id, sequence, create_time, update_time, hidden, redirect, permission_direct, type) VALUES (21, '', '删除角色', '删除角色', 'nested', '', 9, 0, '2021-07-05 17:31:56', '2021-07-05 17:31:56', 0, '', 'role:delete', 1);
+INSERT INTO white_blog.admin_menu (id, path, name, title, icon, component, parent_id, sequence, create_time, update_time, hidden, redirect, permission_direct, type) VALUES (22, '', '编辑菜单', '编辑菜单', 'nested', '', 8, 0, '2021-07-05 17:33:37', '2021-07-05 17:33:37', 0, '', 'menu:update', 1);
+INSERT INTO white_blog.admin_menu (id, path, name, title, icon, component, parent_id, sequence, create_time, update_time, hidden, redirect, permission_direct, type) VALUES (23, '', '删除菜单', '删除菜单', 'nested', '', 8, 0, '2021-07-05 17:34:13', '2021-07-05 17:34:13', 1, '', 'menu:delete', 1);
+INSERT INTO white_blog.admin_menu (id, path, name, title, icon, component, parent_id, sequence, create_time, update_time, hidden, redirect, permission_direct, type) VALUES (24, '', '新增菜单', '新增菜单', 'nested', '', 8, 0, '2021-07-05 17:34:13', '2021-07-05 17:34:13', 1, '', 'menu:add', 1);
+INSERT INTO white_blog.admin_menu (id, path, name, title, icon, component, parent_id, sequence, create_time, update_time, hidden, redirect, permission_direct, type) VALUES (25, '', '重置密码', '重置密码', 'nested', '', 7, 11, '2020-10-11 13:13:13', '2020-10-11 13:13:13', 1, null, 'user:reset', 1);
 
 
--- ----------------------------
--- Records of admin_permission
--- ----------------------------
-INSERT INTO `admin_permission` VALUES (1, 'users_management', '用户管理', '/api/admin/user', '2020-10-09 20:41:01', '2020-10-09 20:41:01');
-INSERT INTO `admin_permission` VALUES (2, 'roles_management', '角色管理', '/api/admin/role', '2020-10-09 20:41:01', '2020-10-09 20:41:01');
-INSERT INTO `admin_permission` VALUES (3, 'content_management', '内容管理', '/api/admin/content', '2020-10-09 20:41:01', '2020-10-09 20:41:01');
+INSERT INTO white_blog.admin_permission (id, name, desc_, url, create_time, update_time) VALUES (1, 'users_management', '用户管理', '/api/admin/user', '2020-10-09 20:41:01', '2020-10-09 20:41:01');
+INSERT INTO white_blog.admin_permission (id, name, desc_, url, create_time, update_time) VALUES (2, 'roles_management', '角色管理', '/api/admin/role', '2020-10-09 20:41:01', '2020-10-09 20:41:01');
+INSERT INTO white_blog.admin_permission (id, name, desc_, url, create_time, update_time) VALUES (3, 'content_management', '内容管理', '/api/admin/content', '2020-10-09 20:41:01', '2020-10-09 20:41:01');
 
--- ----------------------------
--- Records of admin_role
--- ----------------------------
-INSERT INTO `admin_role` VALUES (1, 'sysAdmin', '系统管理员', 1, '2020-10-09 20:41:13', '2020-10-09 20:41:13');
-INSERT INTO `admin_role` VALUES (2, 'contentManager', '内容管理员', 1, '2020-10-09 20:41:13', '2020-10-09 20:41:13');
-INSERT INTO `admin_role` VALUES (3, 'visitor', '访客', 1, '2020-10-09 20:41:13', '2020-10-09 20:41:13');
-INSERT INTO `admin_role` VALUES (9, 'test', '测试角色', 1, '2020-10-09 20:41:13', '2020-10-09 20:41:13');
+INSERT INTO white_blog.admin_role (id, name, name_zh, enabled, create_time, update_time) VALUES (1, 'sysAdmin', '系统管理员', 1, '2020-10-09 20:41:13', '2021-07-07 10:45:44');
+INSERT INTO white_blog.admin_role (id, name, name_zh, enabled, create_time, update_time) VALUES (2, 'contentManager', '内容管理员', 1, '2020-10-09 20:41:13', '2021-07-06 11:22:50');
+INSERT INTO white_blog.admin_role (id, name, name_zh, enabled, create_time, update_time) VALUES (3, 'visitor', '访客', 1, '2020-10-09 20:41:13', '2020-10-09 20:41:13');
+INSERT INTO white_blog.admin_role (id, name, name_zh, enabled, create_time, update_time) VALUES (9, 'test', '测试角色', 1, '2020-10-09 20:41:13', '2020-10-09 20:41:13');
 
--- ----------------------------
--- Records of admin_role_menu
--- ----------------------------
-INSERT INTO `admin_role_menu` VALUES (19, 4, 1, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
-INSERT INTO `admin_role_menu` VALUES (20, 4, 2, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
-INSERT INTO `admin_role_menu` VALUES (21, 3, 1, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
-INSERT INTO `admin_role_menu` VALUES (22, 3, 2, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
-INSERT INTO `admin_role_menu` VALUES (23, 9, 1, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
-INSERT INTO `admin_role_menu` VALUES (24, 9, 2, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
-INSERT INTO `admin_role_menu` VALUES (77, 2, 1, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
-INSERT INTO `admin_role_menu` VALUES (78, 2, 2, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
-INSERT INTO `admin_role_menu` VALUES (79, 2, 4, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
-INSERT INTO `admin_role_menu` VALUES (80, 2, 8, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
-INSERT INTO `admin_role_menu` VALUES (81, 2, 9, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
-INSERT INTO `admin_role_menu` VALUES (82, 2, 10, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
-INSERT INTO `admin_role_menu` VALUES (121, 1, 1, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
-INSERT INTO `admin_role_menu` VALUES (122, 1, 2, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
-INSERT INTO `admin_role_menu` VALUES (123, 1, 3, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
-INSERT INTO `admin_role_menu` VALUES (124, 1, 6, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
-INSERT INTO `admin_role_menu` VALUES (125, 1, 7, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
-INSERT INTO `admin_role_menu` VALUES (126, 1, 4, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
-INSERT INTO `admin_role_menu` VALUES (127, 1, 8, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
-INSERT INTO `admin_role_menu` VALUES (128, 1, 9, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
-INSERT INTO `admin_role_menu` VALUES (129, 1, 10, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
-INSERT INTO `admin_role_menu` VALUES (130, 1, 5, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
+INSERT INTO white_blog.admin_role_menu (id, rid, mid, create_time, update_time) VALUES (19, 4, 1, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
+INSERT INTO white_blog.admin_role_menu (id, rid, mid, create_time, update_time) VALUES (20, 4, 2, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
+INSERT INTO white_blog.admin_role_menu (id, rid, mid, create_time, update_time) VALUES (21, 3, 1, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
+INSERT INTO white_blog.admin_role_menu (id, rid, mid, create_time, update_time) VALUES (22, 3, 2, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
+INSERT INTO white_blog.admin_role_menu (id, rid, mid, create_time, update_time) VALUES (23, 9, 1, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
+INSERT INTO white_blog.admin_role_menu (id, rid, mid, create_time, update_time) VALUES (24, 9, 2, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
+INSERT INTO white_blog.admin_role_menu (id, rid, mid, create_time, update_time) VALUES (244, 2, 7, '2021-07-06 11:22:51', '2021-07-06 11:22:51');
+INSERT INTO white_blog.admin_role_menu (id, rid, mid, create_time, update_time) VALUES (245, 2, 13, '2021-07-06 11:22:51', '2021-07-06 11:22:51');
+INSERT INTO white_blog.admin_role_menu (id, rid, mid, create_time, update_time) VALUES (246, 2, 18, '2021-07-06 11:22:51', '2021-07-06 11:22:51');
+INSERT INTO white_blog.admin_role_menu (id, rid, mid, create_time, update_time) VALUES (247, 2, 14, '2021-07-06 11:22:51', '2021-07-06 11:22:51');
+INSERT INTO white_blog.admin_role_menu (id, rid, mid, create_time, update_time) VALUES (248, 2, 11, '2021-07-06 11:22:51', '2021-07-06 11:22:51');
+INSERT INTO white_blog.admin_role_menu (id, rid, mid, create_time, update_time) VALUES (249, 2, 6, '2021-07-06 11:22:51', '2021-07-06 11:22:51');
+INSERT INTO white_blog.admin_role_menu (id, rid, mid, create_time, update_time) VALUES (333, 1, 25, '2021-07-07 10:45:44', '2021-07-07 10:45:44');
+INSERT INTO white_blog.admin_role_menu (id, rid, mid, create_time, update_time) VALUES (334, 1, 6, '2021-07-07 10:45:44', '2021-07-07 10:45:44');
+INSERT INTO white_blog.admin_role_menu (id, rid, mid, create_time, update_time) VALUES (335, 1, 7, '2021-07-07 10:45:44', '2021-07-07 10:45:44');
+INSERT INTO white_blog.admin_role_menu (id, rid, mid, create_time, update_time) VALUES (336, 1, 8, '2021-07-07 10:45:44', '2021-07-07 10:45:44');
+INSERT INTO white_blog.admin_role_menu (id, rid, mid, create_time, update_time) VALUES (337, 1, 9, '2021-07-07 10:45:44', '2021-07-07 10:45:44');
+INSERT INTO white_blog.admin_role_menu (id, rid, mid, create_time, update_time) VALUES (338, 1, 10, '2021-07-07 10:45:44', '2021-07-07 10:45:44');
+INSERT INTO white_blog.admin_role_menu (id, rid, mid, create_time, update_time) VALUES (339, 1, 13, '2021-07-07 10:45:44', '2021-07-07 10:45:44');
+INSERT INTO white_blog.admin_role_menu (id, rid, mid, create_time, update_time) VALUES (340, 1, 18, '2021-07-07 10:45:44', '2021-07-07 10:45:44');
+INSERT INTO white_blog.admin_role_menu (id, rid, mid, create_time, update_time) VALUES (341, 1, 14, '2021-07-07 10:45:44', '2021-07-07 10:45:44');
+INSERT INTO white_blog.admin_role_menu (id, rid, mid, create_time, update_time) VALUES (342, 1, 11, '2021-07-07 10:45:44', '2021-07-07 10:45:44');
+INSERT INTO white_blog.admin_role_menu (id, rid, mid, create_time, update_time) VALUES (343, 1, 20, '2021-07-07 10:45:44', '2021-07-07 10:45:44');
+INSERT INTO white_blog.admin_role_menu (id, rid, mid, create_time, update_time) VALUES (344, 1, 21, '2021-07-07 10:45:45', '2021-07-07 10:45:45');
+INSERT INTO white_blog.admin_role_menu (id, rid, mid, create_time, update_time) VALUES (345, 1, 22, '2021-07-07 10:45:45', '2021-07-07 10:45:45');
+INSERT INTO white_blog.admin_role_menu (id, rid, mid, create_time, update_time) VALUES (346, 1, 23, '2021-07-07 10:45:45', '2021-07-07 10:45:45');
+INSERT INTO white_blog.admin_role_menu (id, rid, mid, create_time, update_time) VALUES (347, 1, 24, '2021-07-07 10:45:45', '2021-07-07 10:45:45');
+INSERT INTO white_blog.admin_role_menu (id, rid, mid, create_time, update_time) VALUES (348, 1, 25, '2021-07-07 10:45:45', '2021-07-07 10:45:45');
 
--- ----------------------------
--- Records of admin_role_permission
--- ----------------------------
-INSERT INTO `admin_role_permission` VALUES (1, 1, 1, '2020-10-09 20:52:07', '2020-10-09 20:52:07');
-INSERT INTO `admin_role_permission` VALUES (83, 5, 3, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
-INSERT INTO `admin_role_permission` VALUES (97, 2, 3, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
-INSERT INTO `admin_role_permission` VALUES (108, 1, 1, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
-INSERT INTO `admin_role_permission` VALUES (109, 1, 2, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
-INSERT INTO `admin_role_permission` VALUES (110, 1, 3, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
+INSERT INTO white_blog.admin_role_permission (id, rid, pid, create_time, update_time) VALUES (1, 1, 1, '2020-10-09 20:52:07', '2020-10-09 20:52:07');
+INSERT INTO white_blog.admin_role_permission (id, rid, pid, create_time, update_time) VALUES (83, 5, 3, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
+INSERT INTO white_blog.admin_role_permission (id, rid, pid, create_time, update_time) VALUES (97, 2, 3, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
+INSERT INTO white_blog.admin_role_permission (id, rid, pid, create_time, update_time) VALUES (108, 1, 1, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
+INSERT INTO white_blog.admin_role_permission (id, rid, pid, create_time, update_time) VALUES (109, 1, 2, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
+INSERT INTO white_blog.admin_role_permission (id, rid, pid, create_time, update_time) VALUES (110, 1, 3, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
 
--- ----------------------------
--- Records of admin_user_role
--- ----------------------------
-INSERT INTO `admin_user_role` VALUES (1, 1, 1, '2020-10-09 20:51:17', '2020-10-09 20:51:17');
-INSERT INTO `admin_user_role` VALUES (2, 2, 1, '2020-10-09 20:51:23', '2020-10-09 20:51:23');
-INSERT INTO `admin_user_role` VALUES (3, 3, 1, '2020-10-09 20:51:32', '2020-10-09 20:51:32');
-INSERT INTO `admin_user_role` VALUES (40, 24, 2, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
-INSERT INTO `admin_user_role` VALUES (63, 3, 2, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
-INSERT INTO `admin_user_role` VALUES (64, 1, 1, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
-INSERT INTO `admin_user_role` VALUES (65, 2, 3, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
-INSERT INTO `admin_user_role` VALUES (66, 2, 9, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
+INSERT INTO white_blog.admin_user_role (id, uid, rid, create_time, update_time) VALUES (40, 24, 2, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
+INSERT INTO white_blog.admin_user_role (id, uid, rid, create_time, update_time) VALUES (63, 3, 2, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
+INSERT INTO white_blog.admin_user_role (id, uid, rid, create_time, update_time) VALUES (65, 2, 3, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
+INSERT INTO white_blog.admin_user_role (id, uid, rid, create_time, update_time) VALUES (66, 2, 9, '2020-10-09 20:53:51', '2020-10-09 20:53:51');
+INSERT INTO white_blog.admin_user_role (id, uid, rid, create_time, update_time) VALUES (70, 1041, 1, '2021-07-06 09:02:17', '2021-07-06 09:02:17');
+INSERT INTO white_blog.admin_user_role (id, uid, rid, create_time, update_time) VALUES (71, 1026, 1, '2021-07-06 09:37:51', '2021-07-06 09:37:51');
+INSERT INTO white_blog.admin_user_role (id, uid, rid, create_time, update_time) VALUES (72, 1042, 1, '2021-07-06 09:39:57', '2021-07-06 09:39:57');
+INSERT INTO white_blog.admin_user_role (id, uid, rid, create_time, update_time) VALUES (73, 1068, 1, '2021-07-06 09:45:11', '2021-07-06 09:45:11');
+INSERT INTO white_blog.admin_user_role (id, uid, rid, create_time, update_time) VALUES (74, 1052, 1, '2021-07-06 09:48:39', '2021-07-06 09:48:39');
+INSERT INTO white_blog.admin_user_role (id, uid, rid, create_time, update_time) VALUES (75, 1086, 1, '2021-07-06 09:50:20', '2021-07-06 09:50:20');
+INSERT INTO white_blog.admin_user_role (id, uid, rid, create_time, update_time) VALUES (76, 1122, 1, '2021-07-06 09:53:16', '2021-07-06 09:53:16');
+INSERT INTO white_blog.admin_user_role (id, uid, rid, create_time, update_time) VALUES (77, 1036, 1, '2021-07-06 11:15:32', '2021-07-06 11:15:32');
+INSERT INTO white_blog.admin_user_role (id, uid, rid, create_time, update_time) VALUES (84, 1, 1, '2021-07-06 14:32:23', '2021-07-06 14:32:23');
+INSERT INTO white_blog.admin_user_role (id, uid, rid, create_time, update_time) VALUES (85, 1, 2, '2021-07-06 14:32:23', '2021-07-06 14:32:23');
+INSERT INTO white_blog.admin_user_role (id, uid, rid, create_time, update_time) VALUES (86, 1, 3, '2021-07-06 14:32:23', '2021-07-06 14:32:23');
+INSERT INTO white_blog.admin_user_role (id, uid, rid, create_time, update_time) VALUES (87, 1, 9, '2021-07-06 14:32:23', '2021-07-06 14:32:23');
+INSERT INTO white_blog.admin_user_role (id, uid, rid, create_time, update_time) VALUES (89, 1025, 2, '2021-07-07 09:25:07', '2021-07-07 09:25:07');
+INSERT INTO white_blog.admin_user_role (id, uid, rid, create_time, update_time) VALUES (90, 1037, 1, '2021-07-07 10:09:35', '2021-07-07 10:09:35');
 
--- ----------------------------
--- Records of category
--- ----------------------------
-INSERT INTO `category` VALUES (1, '文学', '2020-10-09 20:54:03', '2020-10-09 20:54:03');
-INSERT INTO `category` VALUES (2, '流行', '2020-10-09 20:54:03', '2020-10-09 20:54:03');
-INSERT INTO `category` VALUES (3, '文化', '2020-10-09 20:54:03', '2020-10-09 20:54:03');
-INSERT INTO `category` VALUES (4, '生活', '2020-10-09 20:54:03', '2020-10-09 20:54:03');
-INSERT INTO `category` VALUES (5, '经管', '2020-10-09 20:54:03', '2020-10-09 20:54:03');
-INSERT INTO `category` VALUES (6, '科技', '2020-10-09 20:54:03', '2020-10-09 20:54:03');
+INSERT INTO white_blog.category (id, name, create_time, update_time) VALUES (1, '文学', '2020-10-09 20:54:03', '2020-10-09 20:54:03');
+INSERT INTO white_blog.category (id, name, create_time, update_time) VALUES (2, '流行', '2020-10-09 20:54:03', '2020-10-09 20:54:03');
+INSERT INTO white_blog.category (id, name, create_time, update_time) VALUES (3, '文化', '2020-10-09 20:54:03', '2020-10-09 20:54:03');
+INSERT INTO white_blog.category (id, name, create_time, update_time) VALUES (4, '生活', '2020-10-09 20:54:03', '2020-10-09 20:54:03');
+INSERT INTO white_blog.category (id, name, create_time, update_time) VALUES (5, '经管', '2020-10-09 20:54:03', '2020-10-09 20:54:03');
+INSERT INTO white_blog.category (id, name, create_time, update_time) VALUES (6, '科技', '2020-10-09 20:54:03', '2020-10-09 20:54:03');
 
--- ----------------------------
--- Records of user
--- ----------------------------
-INSERT INTO `user` VALUES (1, 'admin', '35b9529f89cfb9b848060ca576237e17', '8O+vDNr2sI3N82BI31fu1A==', '管理员', '12312312312', 'evan_nightly@163.com', 1, '2020-10-09 20:39:17', '2020-10-09 20:39:17');
-INSERT INTO `user` VALUES (2, 'test', '85087738b6c1e1d212683bfafc163853', 'JBba3j5qRykIPJQYTNNH9A==', '测试', '12312312312', '123@123.com', 1, '2020-10-09 20:39:44', '2020-10-09 20:39:44');
-INSERT INTO `user` VALUES (3, 'editor', '8583a2d965d6159edbf65c82d871fa3e', 'MZTe7Qwf9QgXBXrZzTIqJQ==', '编辑', '12345678933', '12@qq.com', 0, '2020-10-09 20:39:44', '2020-12-16 02:46:00');
-
+INSERT INTO white_blog.user (id, username, password, salt, name, phone, email, enabled, create_time, update_time, avatar) VALUES (1, 'admin', '35b9529f89cfb9b848060ca576237e17', '8O+vDNr2sI3N82BI31fu1A==', '管理员', '12312312312', 'evan_nightly@163.com', 1, '2020-10-09 20:39:17', '2021-07-06 16:49:11', 'C:\\Users\\Administrator\\Pictures\\Saved Pictures\\avg.png');
+INSERT INTO white_blog.user (id, username, password, salt, name, phone, email, enabled, create_time, update_time, avatar) VALUES (2, 'test', '85087738b6c1e1d212683bfafc163853', 'JBba3j5qRykIPJQYTNNH9A==', '测试', '12312312312', '123@123.com', 1, '2020-10-09 20:39:44', '2020-10-09 20:39:44', null);
+INSERT INTO white_blog.user (id, username, password, salt, name, phone, email, enabled, create_time, update_time, avatar) VALUES (3, 'editor', '8583a2d965d6159edbf65c82d871fa3e', 'MZTe7Qwf9QgXBXrZzTIqJQ==', '编辑', '12345678933', '12@qq.com', 0, '2020-10-09 20:39:44', '2020-12-16 02:46:00', null);
+INSERT INTO white_blog.user (id, username, password, salt, name, phone, email, enabled, create_time, update_time, avatar) VALUES (1025, 'test2', '52224071366c49c7e2467de5b6c46cda', 'ALA/VPKmIMVbhqfFhtwGnA==', 'test2', '12345678901', 'test@qq.com', 1, '2021-07-06 11:19:04', '2021-07-07 14:41:06', null);
+INSERT INTO white_blog.user (id, username, password, salt, name, phone, email, enabled, create_time, update_time, avatar) VALUES (1037, 'test3', 'dee678ab911f97a66b12d6e8668a883f', 'lxLtDLoIadUiwsrzlgfWzg==', 'test3', '12345678911', 'test@qq.com', 1, '2021-07-07 10:09:34', '2021-07-07 11:23:35', null);

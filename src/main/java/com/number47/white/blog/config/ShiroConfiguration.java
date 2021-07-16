@@ -3,7 +3,7 @@ package com.number47.white.blog.config;
 import com.number47.white.blog.constant.ShiroConstant;
 import com.number47.white.blog.exception.CustomModularRealmAuthenticator;
 import com.number47.white.blog.filter.AuthFilter;
-import com.number47.white.blog.filter.URLPathMatchingFilter;
+import com.number47.white.blog.filter.ExceptionFilter;
 import com.number47.white.blog.shiro.WBRealm;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.authc.pam.ModularRealmAuthenticator;
@@ -16,6 +16,7 @@ import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.servlet.SimpleCookie;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -125,10 +126,6 @@ public class ShiroConfiguration {
         return authorizationAttributeSourceAdvisor;
     }
 
-    @Bean
-    public URLPathMatchingFilter urlPathMatchingFilter(){
-        return new URLPathMatchingFilter();
-    }
     /**
      * cookie管理对象
      * @return
@@ -150,6 +147,16 @@ public class ShiroConfiguration {
         // 设置cookie的过期时间，单位为秒，记住我时长 30天
         simpleCookie.setMaxAge(259200);
         return simpleCookie;
+    }
+
+    @Bean
+    public FilterRegistrationBean<ExceptionFilter> exceptionFilterRegistration() {
+        FilterRegistrationBean<ExceptionFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(new ExceptionFilter());
+        registration.setName("exceptionFilter");
+        /* 这个序号要很小，保证 exceptionFilter 是所有过滤器链的入口 */
+        registration.setOrder(Integer.MIN_VALUE);
+        return registration;
     }
 
 
